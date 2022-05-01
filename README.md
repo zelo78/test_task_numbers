@@ -1,8 +1,29 @@
 # Пустой проект на Django и DRF
 
-Универсальный пустой шаблон для создания проектов на Django и Django REST framework.
+Универсальный пустой шаблон для создания проектов на 
+**Django** и **Django REST framework**.
 
-## Реализованные URL
+### Запуск
+
+1. Клонировать проект `git clone`
+2. Добавить файл `.env` с данными параметрами:
+```text
+SECRET_KEY=<ваш секретный код>
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0
+```
+3. Запустить контейнер:
+```shell
+docker-compose up -d
+```
+4. Создать суперпользователя:
+```shell
+docker exec -it app python manage.py createsuperuser
+```
+
+
+
+### Реализованные URL
 
 - <http://127.0.0.1:8000/admin/> - интерфейс администрирования
 - <http://127.0.0.1:8000/api/> - API интерфейс
