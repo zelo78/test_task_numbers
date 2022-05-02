@@ -25,16 +25,16 @@ docker exec -it app python manage.py createsuperuser
 
 ### Реализованные URL
 
-- <http://127.0.0.1:8000/admin/> - интерфейс администрирования
-- <http://127.0.0.1:8000/api/> - API интерфейс
-- <http://127.0.0.1:8000/api/token/> - API авторизации
+- <http://0.0.0.0:8000/admin/> - интерфейс администрирования
+- <http://0.0.0.0:8000/api/> - API интерфейс
+- <http://0.0.0.0:8000/api/token/> - API авторизации
 
 ### Swagger/OpenAPI 2.0 specifications
 
-- <http://127.0.0.1:8000/swagger/> - A swagger-ui view of your API specification 
-- <http://127.0.0.1:8000/swagger.json> - A JSON view of your API specification 
-- <http://127.0.0.1:8000/swagger.yaml> - A YAML view of your API specification
-- <http://127.0.0.1:8000/redoc/> - A ReDoc view of your API specification 
+- <http://0.0.0.0:8000/swagger/> - A swagger-ui view of your API specification 
+- <http://0.0.0.0:8000/swagger.json> - A JSON view of your API specification 
+- <http://0.0.0.0:8000/swagger.yaml> - A YAML view of your API specification
+- <http://0.0.0.0:8000/redoc/> - A ReDoc view of your API specification 
 
 ### Авторизация
 

@@ -5,7 +5,7 @@ services:
     container_name: app
     image: app
     restart: always
-    command: python3 manage.py runserver 127.0.0.1:8000
+    command: python3 manage.py runserver 0.0.0.0:8000
     env_file:
         - .env
     volumes:
