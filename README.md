@@ -8,36 +8,31 @@
 ```shell
 git clone https://github.com/zelo78/DRF-project-template.git .
 ```
-2. Создать и активировать виртуальное окружение, установить пакеты:
+2. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
+3. Создать и запустить контейнер:
 ```shell
-python3.9 -m venv venv
-source ./venv/bin/activate
-pip install -Ur requirements.txt
-```
-3. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
+docker-compose build
+docker-compose up -d
+``` 
 4. Создать и применить миграции, создать суперпользователя:
 ```shell
-python project/manage.py makemigrations
-python project/manage.py migrate
-python project/manage.py createsuperuser
-```
-5. Запустить сервер:
-```shell
-python project/manage.py runserver
+docker exec app python manage.py makemigrations
+docker exec app python manage.py migrate
+docker exec -it app python manage.py createsuperuser
 ```
 
 ### Реализованные URL
 
-- <http://127.0.0.1:8000/admin/> - интерфейс администрирования
-- <http://127.0.0.1:8000/api/> - API интерфейс
-- <http://127.0.0.1:8000/api/token/> - API авторизации
+- <http://0.0.0.0:8000/admin/> - интерфейс администрирования
+- <http://0.0.0.0:8000/api/> - API интерфейс
+- <http://0.0.0.0:8000/api/token/> - API авторизации
 
 ### Swagger/OpenAPI 2.0 specifications
 
-- <http://127.0.0.1:8000/swagger/> - A swagger-ui view of your API specification 
-- <http://127.0.0.1:8000/swagger.json> - A JSON view of your API specification 
-- <http://127.0.0.1:8000/swagger.yaml> - A YAML view of your API specification
-- <http://127.0.0.1:8000/redoc/> - A ReDoc view of your API specification 
+- <http://0.0.0.0:8000/swagger/> - A swagger-ui view of your API specification 
+- <http://0.0.0.0:8000/swagger.json> - A JSON view of your API specification 
+- <http://0.0.0.0:8000/swagger.yaml> - A YAML view of your API specification
+- <http://0.0.0.0:8000/redoc/> - A ReDoc view of your API specification 
 
 ### Авторизация
 
