@@ -1,27 +1,25 @@
-# Пустой проект на Django и DRF
+# Шаблон проекта на Django и Django REST framework
 
-Универсальный пустой шаблон для создания проектов на 
-**Django** и **Django REST framework**.
+Универсальный пустой шаблон для создания проектов на **Django** и **Django REST framework**.
 
-### Запуск
+## Запуск
 
-1. Клонировать проект `git clone`
-2. Добавить файл `.env` с данными параметрами:
-```text
-SECRET_KEY=<ваш секретный код>
-DEBUG=True
-ALLOWED_HOSTS=127.0.0.1,localhost,0.0.0.0
-```
-3. Запустить контейнер:
+1. Клонировать проект в пустую папку:
 ```shell
+git clone https://github.com/zelo78/DRF-project-template.git .
+```
+2. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
+3. Создать и запустить контейнер:
+```shell
+docker-compose build
 docker-compose up -d
-```
-4. Создать суперпользователя:
+``` 
+4. Создать и применить миграции, создать суперпользователя:
 ```shell
+docker exec app python manage.py makemigrations
+docker exec app python manage.py migrate
 docker exec -it app python manage.py createsuperuser
 ```
-
-
 
 ### Реализованные URL
 
