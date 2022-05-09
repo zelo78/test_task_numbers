@@ -2,26 +2,39 @@
 
 Универсальный пустой шаблон для создания проектов на **Django** и **Django REST framework**.
 
-## Запуск
+## Установка
 
 1. Клонировать проект в пустую папку:
 ```shell
 git clone https://github.com/zelo78/DRF-project-template.git .
 ```
-2. Переименовать файл `start.env` в `.env` (Он должен находится в корне проекта, рядом с `README.md`)
-3. Создать и запустить контейнер:
+
+2. Копировать файл `start.env` как `.env` (Он должен находится в корне проекта, рядом с `README.md`)
 ```shell
-docker-compose build
-docker-compose up -d
-``` 
-4. Создать и применить миграции, создать суперпользователя:
-```shell
-docker exec app python manage.py makemigrations
-docker exec app python manage.py migrate
-docker exec -it app python manage.py createsuperuser
+cp start.env .env
 ```
 
-### Реализованные URL
+3. Создать и запустить контейнер (при запуске контейнера будут созданы и применены миграции):
+```shell
+docker-compose up -d --build
+``` 
+
+4. Создать суперпользователя:
+```shell
+docker exec -it app python manage.py createsuperuser --username USER
+```
+
+5. Остановить контейнер
+```shell
+docker-compose down
+```
+
+## Запуск
+```shell
+docker-compose up
+``` 
+
+## Реализованные URL
 
 - <http://0.0.0.0:8000/admin/> - интерфейс администрирования
 - <http://0.0.0.0:8000/api/> - API интерфейс
@@ -36,19 +49,35 @@ docker exec -it app python manage.py createsuperuser
 
 ### Авторизация
 
-1. Получение токена
+#### Авторизация с помощью *BasicAuthentication* 
+```shell
+curl \
+  -X GET \
+  -H "Content-Type: application/json" \
+  -u USER:PASSWORD \
+  http://0.0.0.0:8000/api/users/
+```
+
+#### Авторизация с помощью *JWT*
+
+- создаём токен авторизации
 ```shell
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"username": "oleg", "password": "12345678"}' \
-  http://127.0.0.1:8000/api/token/
+  -d '{"username": "USER", "password": "PASSWORD"}' \
+  http://0.0.0.0:8000/api/token/
 ```
-2. Авторизация с использованием токена
+
+Получаем ответ вида
+> {"refresh":"ey...I0","access":"ey...lQ"}
+
+- авторизуемся с помощью токена:
 ```shell
 curl \
-  -H "Authorization: Bearer <token>" \
-  http://127.0.0.1:8000/api/users/
+  -X GET \
+  -H "Authorization: Bearer ey...lQ" \
+  http://0.0.0.0:8000/api/users/
 ```
 
 ## Использованные библиотеки
