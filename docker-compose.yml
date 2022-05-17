@@ -2,8 +2,8 @@ version: "3.2"
 services:
   app:
     build: .
-    container_name: app
-    image: app
+    image: zapp
+    container_name: zapp
     restart: always
     command: >
       sh -c "python3 manage.py wait_for_db &&
