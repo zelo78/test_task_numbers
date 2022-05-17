@@ -21,7 +21,7 @@ docker-compose up -d --build
 
 4. Создать суперпользователя:
 ```shell
-docker exec -it app python manage.py createsuperuser --username USER
+docker exec -it zapp python manage.py createsuperuser --username USER
 ```
 
 5. Остановить контейнер
