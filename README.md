@@ -17,7 +17,7 @@ cp start.env .env
 3. Создать и запустить контейнер (при запуске контейнера будут созданы и применены миграции):
 ```shell
 docker-compose up -d --build
-``` 
+```
 
 4. Создать суперпользователя:
 ```shell
@@ -42,10 +42,12 @@ docker-compose up
 
 ### Swagger/OpenAPI 2.0 specifications
 
+Доступны при установке `DEBUG = True`
+
 - <http://0.0.0.0:8000/swagger/> - A swagger-ui view of your API specification 
 - <http://0.0.0.0:8000/swagger.json> - A JSON view of your API specification 
 - <http://0.0.0.0:8000/swagger.yaml> - A YAML view of your API specification
-- <http://0.0.0.0:8000/redoc/> - A ReDoc view of your API specification 
+- <http://0.0.0.0:8000/redoc/> - A ReDoc view of your API specification
 
 ### Авторизация
 
