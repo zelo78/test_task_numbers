@@ -6,8 +6,8 @@ RUN apk update && \
     python3-dev \
     gcc \
     musl-dev
-WORKDIR /project
-COPY ./requirements.txt /project/requirements.txt
+WORKDIR /app
+COPY requirements.txt /app/requirements.txt
 RUN python -m pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -Ur /project/requirements.txt
-COPY ./project /project
+RUN pip install --no-cache-dir -Ur requirements.txt
+COPY . /app

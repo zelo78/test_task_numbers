@@ -1,7 +1,8 @@
 version: "3.2"
 services:
   app:
-    build: .
+    build:
+      context: ./project
     image: zapp
     container_name: zapp
     restart: always
@@ -13,14 +14,14 @@ services:
     env_file:
       - .env
     volumes:
-      - ./project:/project
+      - ./project:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
   db:
     image: postgres:14.2-alpine
-    container_name: db
+    container_name: zdb
     volumes:
       - ./db/:/var/lib/postgresql/data/
     env_file:
