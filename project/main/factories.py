@@ -1,4 +1,7 @@
 from random import choice
+from datetime import timedelta
+
+from django.utils import timezone
 
 import factory
 import factory.fuzzy
@@ -29,3 +32,14 @@ class PostFactory(factory.django.DjangoModelFactory):
     title = factory.Faker("sentence", nb_words=5, locale="ru_RU")
     text = factory.Faker("paragraph", nb_sentences=5, locale="ru_RU")
     author = factory.LazyFunction(lambda: choice(User.objects.all()))
+
+    created = factory.fuzzy.FuzzyDateTime(timezone.now() - timedelta(days=720))
+
+    @classmethod
+    def _create(cls, target_class, *args, **kwargs):
+        created = kwargs.pop("created", None)
+        obj = super()._create(target_class, *args, **kwargs)
+        if created is not None:
+            obj.created = created
+            obj.save()
+        return obj

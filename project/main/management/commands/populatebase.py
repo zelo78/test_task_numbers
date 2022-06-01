@@ -35,17 +35,14 @@ class Command(BaseCommand):
             if current_count < target_count:
                 model_factory.create_batch(target_count - current_count)
 
-        # sellers = Seller.objects.all()
-        # categories = Category.objects.all()
-        # tags = Tag.objects.all()
-        # for i in range(count):
-        #     seller = random.choice(sellers)
-        #     category = random.choice(categories)
-        #     ad = AdFactory.create(seller=seller, category=category)
-        #     for tag in random.sample(list(tags), k=random.randint(0, 5)):
-        #         ad.tags.add(tag)
-        #     if i % 10 == 0:
-        #         ad.archived = True
-        #     self.stdout.write(f'Ad {ad} ads was created')
-        #
-        # self.stdout.write(f'{count} ads was created')
+        user_count = User.objects.count()
+        target_likes_count = min(4, user_count)
+        target_unlikes_count = min(2, user_count-target_likes_count)
+
+        for post in Post.objects.all():
+            delta = target_likes_count - post.likes.count()
+            if delta > 0:
+                post.likes.add(*random.sample(list(User.objects.all()), delta))
+            delta = target_unlikes_count - post.unlikes.count()
+            if delta > 0:
+                post.unlikes.add(*random.sample(list(User.objects.exclude(liked_posts=post)), delta))
