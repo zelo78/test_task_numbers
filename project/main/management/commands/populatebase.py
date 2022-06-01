@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
         user_count = User.objects.count()
         target_likes_count = min(4, user_count)
-        target_unlikes_count = min(2, user_count-target_likes_count)
+        target_unlikes_count = min(2, user_count - target_likes_count)
 
         for post in Post.objects.all():
             delta = target_likes_count - post.likes.count()
@@ -45,4 +45,6 @@ class Command(BaseCommand):
                 post.likes.add(*random.sample(list(User.objects.all()), delta))
             delta = target_unlikes_count - post.unlikes.count()
             if delta > 0:
-                post.unlikes.add(*random.sample(list(User.objects.exclude(liked_posts=post)), delta))
+                post.unlikes.add(
+                    *random.sample(list(User.objects.exclude(liked_posts=post)), delta)
+                )
