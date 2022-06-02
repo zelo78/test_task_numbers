@@ -36,15 +36,35 @@ class Command(BaseCommand):
                 model_factory.create_batch(target_count - current_count)
 
         user_count = User.objects.count()
-        target_likes_count = min(4, user_count)
-        target_unlikes_count = min(2, user_count - target_likes_count)
 
         for post in Post.objects.all():
-            delta = target_likes_count - post.likes.count()
+            target_likes_count = min(
+                random.randint(1, 10), user_count - post.unlikes_count
+            )
+            delta = target_likes_count - post.likes_count
             if delta > 0:
-                post.likes.add(*random.sample(list(User.objects.all()), delta))
-            delta = target_unlikes_count - post.unlikes.count()
+                post.likes.add(
+                    *random.sample(
+                        list(
+                            User.objects.exclude(liked_posts=post).exclude(
+                                unliked_posts=post
+                            )
+                        ),
+                        delta,
+                    )
+                )
+            target_unlikes_count = min(
+                random.randint(1, 3), user_count - post.likes_count
+            )
+            delta = target_unlikes_count - post.unlikes_count
             if delta > 0:
                 post.unlikes.add(
-                    *random.sample(list(User.objects.exclude(liked_posts=post)), delta)
+                    *random.sample(
+                        list(
+                            User.objects.exclude(liked_posts=post).exclude(
+                                unliked_posts=post
+                            )
+                        ),
+                        delta,
+                    )
                 )

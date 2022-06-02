@@ -21,3 +21,11 @@ class Post(models.Model):
     unlikes = models.ManyToManyField(
         User, verbose_name="отметка unlike", related_name="unliked_posts"
     )
+
+    @property
+    def likes_count(self):
+        return self.likes.count()
+
+    @property
+    def unlikes_count(self):
+        return self.unlikes.count()

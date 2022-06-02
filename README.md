@@ -47,50 +47,55 @@ docker-compose up
 
 - [x] `python manage.py manage.py populatebase <count: int>`
 
-  - Наполнение базы данных случайными Сообщениями в целях тестирования, общее число Сообщений будет не меньше `count`
+  - Наполнение базы данных случайными Пользователями и Сообщениями в целях тестирования, общее число Сообщений будет не меньше `count`
+  - У Сообщений будет случайный текст, случайная дата создания, несколько лайков и дизлайков
 
 ### Реализованные API
 
-- [ ] `POST /api/post/create/`
+- [x] `POST /api/post/create/`
   - создание Сообщения
-  - только авторизованными пользователями
+  - доступно только авторизованному Пользователю (он становится автором Сообщения)
   
-- [ ] `GET /api/post/`
-  - получение списка Сообщений
+- [x] `GET /api/post/`
+  - получение списка Сообщений (с пагинацией)
+  - доступно для всех
+  - возможна фильтрация по Пользователю (автору Сообщения)
 
-- [ ] `GET /api/post/<id: int>/`
+- [x] `GET /api/post/<id: int>/`
   - получение конкретного Сообщения
-  - автор сообщения видит больше информации, чем остальные
+  - доступно для всех
+  - администраторы и автор Сообщения видят не просто количество лайков и дизлайков, но и список поставивших отметки like и unlike
 
-- [ ] `PATCH /api/post/<id: int>/`
+- [x] `PATH /api/post/<id: int>/`
   - частичное обновление Сообщения
-  - доступно только его автору
+  - доступно только его автору и администраторам
 
-- [ ] `DELETE /api/post/<id: int>/`
+- [x] `DELETE /api/post/<id: int>/`
   - удаление Сообщения
-  - доступно только его автору
+  - доступно только его автору и администраторам
 
-- [ ] `POST /api/post/<id: int>/like/`
+- [x] `PATH /api/post/<id: int>/like/`
   - пометить Сообщение как "понравившееся" (like)
-  - только от авторизованного пользователя
+  - доступно только авторизованному пользователю
   - автор метки сохраняется в БД и эта информация доступна автору Сообщения
   - метки "понравилось" и "не понравилось" являются взаимоисключающими, установка одной удаляет другую
 
-- [ ] `POST /api/post/<id: int>/unlike/`
+- [x] `PATH /api/post/<id: int>/unlike/`
   - пометить Сообщение как "непонравившееся" (unlike)
-  - только от авторизованного пользователя
+  - доступно только авторизованному пользователю
   - автор метки сохраняется в БД и эта информация доступна автору Сообщения
   - метки "понравилось" и "не понравилось" являются взаимоисключающими, установка одной удаляет другую
 
-- [x] `POST /api/token/`
+- [ ] `POST /api/token/`
   - получение токена JWT авторизации
 
 - [ ] `POST /api/users/`
   - создание нового Пользователя
+  - возвращает HTTP 201 Created
 
 - [ ] `GET /api/users/`
   - получение списка Пользователей
-  - только для Администраторов
+  - Администраторы видят всех пользователей, обычные пользователи - самих себя, не аутентифицированные - ошибку HTTP 401 Unauthorized
 
 - [ ] `GET /api/users/<id: int>/`
   - получение информации по конкретному пользователю
@@ -98,7 +103,7 @@ docker-compose up
 
 - [ ] `PATCH /api/users/<id: int>/`
   - частичное обновление Пользователя
-  - только для Администраторов или о самого себя
+  - только для Администраторов или самого себя
 
 - [ ] `DELETE /api/users/<id: int>/`
   - удаление Пользователя
@@ -153,7 +158,62 @@ curl \
   http://0.0.0.0:8000/api/post/
 ```
 
+## Линтеры
+
+Исходный код проверен линтерами `black` и `flake8`
+
 ## Примеры запросов 
+
+1. Получение списка постов
+```shell
+curl -X GET "http://127.0.0.1:8000/api/posts/"
+```
+
+Возвращаемое значение
+> {
+    "count": 25,
+    "next": "http://0.0.0.0:8000/api/posts/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 159,
+            "url": "http://0.0.0.0:8000/api/posts/159/",
+            "title": "Банк страсть даль.",
+            "text": "Пол издали один космос каюта пастух. Отражение плавно постоянный наступать угол развернуться уточнить. Темнеть оставить дурацкий. Развитый сбросить оставить протягивать слишком. Магазин счастье природа коробка цепочка.",
+            "created": "2022-03-26T08:24:23.035606+03:00",
+            "edited": "2022-06-02T10:10:56.583260+03:00",
+            "author": 57,
+            "likes_count": 3,
+            "unlikes_count": 1
+        },
+        {
+            "id": 160,
+            "url": "http://0.0.0.0:8000/api/posts/160/",
+            "title": "Уточнить коллектив девка руководитель применяться.",
+            "text": "Еврейский пасть тревога мимо налоговый. Тысяча мгновение факультет заведение угол. Выражаться дьявол ныне равнодушный рота. Присесть сопровождаться поздравлять плод запустить металл. Поздравлять выкинуть командующий еврейский перебивать пища желание.",
+            "created": "2022-02-26T17:45:41.181603+03:00",
+            "edited": "2022-06-02T10:10:56.586067+03:00",
+            "author": 47,
+            "likes_count": 7,
+            "unlikes_count": 1
+        }, и т.д.
+
+2. Получение данных о конкретном посте
+```shell
+curl -X GET "http://127.0.0.1:8000/api/posts/165/"
+```
+
+Возвращаемое значение:
+> {"id":165,"url":"http://127.0.0.1:8000/api/posts/165/","title":"Фонарик промолчать провал правление голубчик.","text":"Грустный вчера степь какой что поймать. Витрина похороны степь плясать кольцо сравнение. Нервно неправда факультет лапа жить слать. Идея пропадать отражение горький. Серьезный вряд возмутиться сверкающий неправда.","created":"2020-09-30T20:49:06.366207+03:00","edited":"2022-06-02T10:10:56.599382+03:00","author":62,"likes_count":6,"unlikes_count":3}
+
+3. Получение данных о своём посте (JWT токен для авторизации надо получить до этого вызова)
+```shell
+curl -X GET "http://127.0.0.1:8000/api/posts/165/" -H "Authorization: Bearer ey...lQ"
+```
+
+Возвращаемое значение:
+> {"id":165,"url":"http://127.0.0.1:8000/api/posts/165/","title":"Фонарик промолчать провал правление голубчик.","text":"Грустный вчера степь какой что поймать. Витрина похороны степь плясать кольцо сравнение. Нервно неправда факультет лапа жить слать. Идея пропадать отражение горький. Серьезный вряд возмутиться сверкающий неправда.","created":"2020-09-30T20:49:06.366207+03:00","edited":"2022-06-02T10:10:56.599382+03:00","author":62,"likes_count":6,"unlikes_count":3,"likes":[{"id":66,"url":"http://127.0.0.1:8000/api/users/66/","username":"net","first_name":"net","last_name":"net","email":"net@example.com"},{"id":62,"url":"http://127.0.0.1:8000/api/users/62/","username":"oleg","first_name":"rast","last_name":"","email":""},{"id":50,"url":"http://127.0.0.1:8000/api/users/50/","username":"Test_username_7","first_name":"Cathy","last_name":"Murray","email":"pcastaneda@example.org"},{"id":51,"url":"http://127.0.0.1:8000/api/users/51/","username":"Test_username_8","first_name":"Pamela","last_name":"Booker","email":"dale76@example.com"},{"id":57,"url":"http://127.0.0.1:8000/api/users/57/","username":"Test_username_14","first_name":"Kimberly","last_name":"Clark","email":"gary54@example.com"},{"id":63,"url":"http://127.0.0.1:8000/api/users/63/","username":"nemo","first_name":"Немо","last_name":"Немович","email":"zi@r.ru"}],"unlikes":[{"id":1,"url":"http://127.0.0.1:8000/api/users/1/","username":"USER","first_name":"","last_name":"","email":"zelo78@yandex.ru"},{"id":56,"url":"http://127.0.0.1:8000/api/users/56/","username":"Test_username_13","first_name":"Timothy","last_name":"Lara","email":"ejackson@example.org"},{"id":61,"url":"http://127.0.0.1:8000/api/users/61/","username":"Test_username_18","first_name":"Robert","last_name":"Olson","email":"riveratiffany@example.com"}]}
+
 
 ## Тестовое задание **Социальная сеть**
 
@@ -196,11 +256,12 @@ curl \
 
 ## Использованные библиотеки
 
-- [Django](https://www.djangoproject.com/) v. 4.0.4
+- [Django](https://www.djangoproject.com/) v. 4.0.5
 - [Django REST framework](https://www.django-rest-framework.org/) v. 3.13.1
+- [django-filter](https://django-filter.readthedocs.io/en/stable/) v. 21.1 - allows users to filter down a queryset based on a model’s fields, displaying the form to let them do this
 - [Psycopg](https://www.psycopg.org/docs/) v. 2.9.3 - PostgreSQL database adapter for Python
 - [drf-yasg](https://drf-yasg.readthedocs.io/en/stable/) v. 1.20.0 - Yet another Swagger generator. Generate real Swagger/OpenAPI 2.0 specifications from a Django Rest Framework API
-- [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/) v. 5.1.0 - Simple JWT provides a JSON Web Token authentication backend for the Django REST Framework
+- [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/) v. 5.2.0 - Simple JWT provides a JSON Web Token authentication backend for the Django REST Framework
 - [python-dotenv](https://pypi.org/project/python-dotenv/) v. 0.20.0 - Reads key-value pairs from a `.env` file and can set them as environment variables
 - [black](https://black.readthedocs.io/en/stable/) v. 22.3.0 - The uncompromising code formatter
 - [factory_boy](https://factoryboy.readthedocs.io/en/stable/) v 3.2.1 - Fixtures replacement tool, it aims to replace static, hard to maintain fixtures with easy-to-use factories for complex objects.
