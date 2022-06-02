@@ -93,21 +93,21 @@ docker-compose up
   - создание нового Пользователя
   - возвращает HTTP 201 Created
 
-- [ ] `GET /api/users/`
+- [x] `GET /api/users/`
   - получение списка Пользователей
-  - Администраторы видят всех пользователей, обычные пользователи - самих себя, не аутентифицированные - ошибку HTTP 401 Unauthorized
+  - доступно только авторизованным пользователям
 
-- [ ] `GET /api/users/<id: int>/`
+- [x] `GET /api/users/<id: int>/`
   - получение информации по конкретному пользователю
   - только для Администраторов или о самом себе
 
-- [ ] `PATCH /api/users/<id: int>/`
+- [x] `PATCH /api/users/<id: int>/`
   - частичное обновление Пользователя
   - только для Администраторов или самого себя
 
-- [ ] `DELETE /api/users/<id: int>/`
+- [x] `DELETE /api/users/<id: int>/`
   - удаление Пользователя
-  - только для Администраторов
+  - доступно только Администраторам
 
 ### Реализованные URL
 
@@ -116,13 +116,13 @@ docker-compose up
 
 ### Swagger/OpenAPI 2.0 specifications
 
-- [ ] <http://0.0.0.0:8000/swagger/> 
+- [x] <http://0.0.0.0:8000/swagger/> 
   - A swagger-ui view of your API specification 
-- [ ] <http://0.0.0.0:8000/swagger.json> 
+- [x] <http://0.0.0.0:8000/swagger.json> 
   - A JSON view of your API specification 
-- [ ] <http://0.0.0.0:8000/swagger.yaml> 
+- [x] <http://0.0.0.0:8000/swagger.yaml> 
   - A YAML view of your API specification
-- [ ] <http://0.0.0.0:8000/redoc/> 
+- [x] <http://0.0.0.0:8000/redoc/> 
   - A ReDoc view of your API specification 
 
 ### Авторизация
@@ -239,7 +239,44 @@ curl -X PATCH \
 ```
 
 Получаем стандартные данные об обновлённом Сообщении
+ 
+9. Получение списка Пользователей
+```shell
+curl -X GET \
+  -u USER:PASSWORD \
+  "http://127.0.0.1:8000/api/users/"
+```
 
+Получаем список Пользователей (требуется авторизация)
+
+10. Получение данных о конкретном Пользователе
+```shell
+curl -X GET \
+  -u USER:PASSWORD \
+  "http://127.0.0.1:8000/api/users/10/"
+```
+
+Получаем данные о Пользователе (требуется авторизация)
+
+11. Обновление данных о Пользователе
+```shell
+curl -X PATCH \
+  -H  "Content-Type: application/json" \
+  -d '{"first_name": "Новое имя"}' \
+  -u USER:PASSWORD \
+  "http://127.0.0.1:8000/api/users/53/"
+```
+
+Получаем обновлённые данные о Пользователе
+
+12. Удаляем Пользователя
+```shell
+  curl -X DELETE \
+  -u USER:PASSWORD \
+  "http://127.0.0.1:8000/api/users/10/"
+```
+
+Требуется авторизация, только Администраторы имеют права
 
 ## Тестовое задание **Социальная сеть**
 

@@ -8,8 +8,35 @@ from main.serializers import (
     PostSerializer,
     PostForAuthorSerializer,
     PostCreateUpdateSerializer,
-    UserSerializer,
+    UserCreateSerializer,
+    UserInfoSerializer,
 )
+
+
+class UserViewsetPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        # Allow metadata
+        if request.method in ("HEAD", "OPTIONS"):
+            return True
+
+        # Allow register new users
+        if request.method == "POST":
+            return True
+
+        # All other operation (include GET) require authentication
+        return bool(request.user and request.user.is_authenticated)
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Admins can do anything and
+        # user cad patch themselves
+        return request.user.is_staff or (
+            request.method in ["PUT", "PATCH"] and obj == request.user
+        )
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -17,33 +44,9 @@ class UserViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be created, viewed or edited.
     """
 
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        """Administrators get the full list of users, and everyone else gets only themselves"""
-
-        queryset = User.objects.order_by("-date_joined")
-        user = self.request.user
-        if user.is_staff:
-            return queryset.all()
-        else:
-            return queryset.filter(id=user.id)
-
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action in ["list", "retrieve", "update", "partial_update"]:
-            permission_classes = [permissions.IsAuthenticated]
-        elif self.action == "create":
-            permission_classes = [permissions.AllowAny]
-        elif self.action == "destroy":
-            permission_classes = [permissions.IsAdminUser]
-        else:
-            permission_classes = [permissions.AllowAny]
-
-        return [permission() for permission in permission_classes]
+    queryset = User.objects.all()
+    serializer_class = UserInfoSerializer
+    permission_classes = [UserViewsetPermission]
 
 
 class IsOwnerOrStaffOrReadOnly(permissions.IsAuthenticatedOrReadOnly):

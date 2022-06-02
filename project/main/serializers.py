@@ -9,6 +9,20 @@ class UserInfoSerializer(serializers.ModelSerializer):
         fields = ["id", "url", "username", "first_name", "last_name", "email"]
 
 
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "url",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+        ]
+
+
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -46,12 +60,6 @@ class PostForAuthorSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["username", "first_name", "last_name", "email", "password"]
-
-
 class PostCreateUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -66,9 +74,3 @@ class PostCreateUpdateSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         post = Post.objects.create(**validated_data, author=user)
         return post
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "first_name", "last_name", "email", "password"]
