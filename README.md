@@ -290,4 +290,5 @@ curl -X PATCH \
 - [Simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/) v. 5.2.0 - Simple JWT provides a JSON Web Token authentication backend for the Django REST Framework
 - [python-dotenv](https://pypi.org/project/python-dotenv/) v. 0.20.0 - Reads key-value pairs from a `.env` file and can set them as environment variables
 - [black](https://black.readthedocs.io/en/stable/) v. 22.3.0 - The uncompromising code formatter
+- [flake8](https://flake8.pycqa.org/en/latest/index.html) v. 4.0.1 - Your Tool For Style Guide Enforcement
 - [factory_boy](https://factoryboy.readthedocs.io/en/stable/) v 3.2.1 - Fixtures replacement tool, it aims to replace static, hard to maintain fixtures with easy-to-use factories for complex objects.
