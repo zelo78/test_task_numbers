@@ -31,7 +31,7 @@ docker exec -it zapp python manage.py createsuperuser --username USER
 docker exec -it zapp python manage.py populatebase
 ```
 
-7. Остановить контейнер
+6. Остановить контейнер
 ```shell
 docker-compose down
 ```
@@ -89,9 +89,8 @@ docker-compose up
 - [x] `POST /api/token/`
   - получение токена JWT авторизации
 
-- [ ] `POST /api/users/`
+- [X] `POST /api/users/`
   - создание нового Пользователя
-  - возвращает HTTP 201 Created
 
 - [x] `GET /api/users/`
   - получение списка Пользователей
@@ -99,7 +98,7 @@ docker-compose up
 
 - [x] `GET /api/users/<id: int>/`
   - получение информации по конкретному пользователю
-  - только для Администраторов или о самом себе
+  - доступно только авторизованным пользователям
 
 - [x] `PATCH /api/users/<id: int>/`
   - частичное обновление Пользователя
@@ -239,8 +238,18 @@ curl -X PATCH \
 ```
 
 Получаем стандартные данные об обновлённом Сообщении
- 
-9. Получение списка Пользователей
+
+9. Создание нового Пользователя
+```shell
+curl -X POST \
+  -H  "Content-Type: application/json" \
+  -d '{"username": "New_username", "password": "PASSWORD"}' \
+  "http://127.0.0.1:8000/api/users/"
+```
+
+Получаем данные о новом пользователе (кроме пароля)
+
+10. Получение списка Пользователей
 ```shell
 curl -X GET \
   -u USER:PASSWORD \
@@ -249,7 +258,7 @@ curl -X GET \
 
 Получаем список Пользователей (требуется авторизация)
 
-10. Получение данных о конкретном Пользователе
+11. Получение данных о конкретном Пользователе
 ```shell
 curl -X GET \
   -u USER:PASSWORD \
@@ -258,7 +267,7 @@ curl -X GET \
 
 Получаем данные о Пользователе (требуется авторизация)
 
-11. Обновление данных о Пользователе
+12. Обновление данных о Пользователе
 ```shell
 curl -X PATCH \
   -H  "Content-Type: application/json" \
@@ -269,7 +278,7 @@ curl -X PATCH \
 
 Получаем обновлённые данные о Пользователе
 
-12. Удаляем Пользователя
+13. Удаляем Пользователя
 ```shell
   curl -X DELETE \
   -u USER:PASSWORD \

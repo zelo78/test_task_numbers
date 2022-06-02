@@ -48,6 +48,18 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserInfoSerializer
     permission_classes = [UserViewsetPermission]
 
+    def get_serializer_class(self):
+        serializer_class = self.serializer_class
+        if self.action in ["create"]:
+            serializer_class = UserCreateSerializer
+
+        return serializer_class
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        user.set_password(serializer.validated_data.get("password"))
+        user.save()
+
 
 class IsOwnerOrStaffOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     """

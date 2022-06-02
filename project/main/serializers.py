@@ -21,6 +21,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             "email",
             "password",
         ]
+        extra_kwargs = {"password": {"write_only": True}}
 
 
 class PostSerializer(serializers.ModelSerializer):
