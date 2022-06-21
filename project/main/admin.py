@@ -1,13 +1,12 @@
 from django.contrib import admin
 
-from .models import Post
+from .models import Order
 
 
-class PostAdmin(admin.ModelAdmin):
-    list_display = ["author", "created", "title"]
-    date_hierarchy = "created"
-    filter_horizontal = ["likes", "unlikes"]
-    readonly_fields = ["created", "edited"]
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ["id", "order_id", "price_usd", "price_rub", "delivery_date"]
+    readonly_fields = ["price_rub"]
+    date_hierarchy = "delivery_date"
 
 
-admin.site.register(Post, PostAdmin)
+admin.site.register(Order, OrderAdmin)

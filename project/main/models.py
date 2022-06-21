@@ -1,31 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
 
 
-class Post(models.Model):
+class Order(models.Model):
     class Meta:
-        verbose_name = "сообщение"
-        verbose_name_plural = "сообщения"
-        ordering = ["-created"]
+        verbose_name = "заказ"
+        verbose_name_plural = "заказы"
 
-    title = models.CharField("заголовок", max_length=128)
-    text = models.TextField("текст")
-    created = models.DateTimeField("создано", auto_now_add=True)
-    edited = models.DateTimeField("изменено", auto_now=True)
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="автор", related_name="posts"
-    )
-    likes = models.ManyToManyField(
-        User, verbose_name="отметка like", related_name="liked_posts"
-    )
-    unlikes = models.ManyToManyField(
-        User, verbose_name="отметка unlike", related_name="unliked_posts"
-    )
+    order_id = models.PositiveIntegerField("заказ №", unique=True)
+    price_usd = models.FloatField("стоимость, $", default=0)
+    price_rub = models.FloatField("стоимость, руб.", default=0)
+    delivery_date = models.DateField("срок поставки")
 
-    @property
-    def likes_count(self):
-        return self.likes.count()
-
-    @property
-    def unlikes_count(self):
-        return self.unlikes.count()
+    def __str__(self):
+        return f"Заказ #{self.order_id} стоимость {self.price_usd}$"

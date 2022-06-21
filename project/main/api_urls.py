@@ -8,8 +8,7 @@ from rest_framework_simplejwt.views import (
 from main import api
 
 router = routers.DefaultRouter()
-router.register(r"users", api.UserViewSet, basename="user")
-router.register(r"posts", api.PostViewSet)
+router.register(r"orders", api.OrderViewSet)
 
 
 urlpatterns = [

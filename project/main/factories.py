@@ -1,4 +1,3 @@
-from random import choice
 from datetime import timedelta
 
 from django.utils import timezone
@@ -6,40 +5,16 @@ from django.utils import timezone
 import factory
 import factory.fuzzy
 
-from main.models import User, Post
+from main.models import Order
 
 
-class UserFactory(factory.django.DjangoModelFactory):
+class OrderFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = User
-        django_get_or_create = ("username",)
+        model = Order
 
-    class Params:
-        full_name = factory.Faker("name")
-
-    first_name = factory.LazyAttribute(lambda obj: obj.full_name.split(sep=" ")[0])
-    last_name = factory.LazyAttribute(lambda obj: obj.full_name.split(sep=" ")[-1])
-    email = factory.Faker("email")
-    password = factory.Faker("password")
-
-    username = factory.Sequence(lambda n: f"Test_username_{n}")
-
-
-class PostFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Post
-
-    title = factory.Faker("sentence", nb_words=5, locale="ru_RU")
-    text = factory.Faker("paragraph", nb_sentences=5, locale="ru_RU")
-    author = factory.LazyFunction(lambda: choice(User.objects.all()))
-
-    created = factory.fuzzy.FuzzyDateTime(timezone.now() - timedelta(days=720))
-
-    @classmethod
-    def _create(cls, target_class, *args, **kwargs):
-        created = kwargs.pop("created", None)
-        obj = super()._create(target_class, *args, **kwargs)
-        if created is not None:
-            obj.created = created
-            obj.save()
-        return obj
+    order_id = factory.fuzzy.FuzzyInteger(100000, 999999)
+    price_usd = factory.fuzzy.FuzzyInteger(1, 1000000)
+    price_rub = factory.LazyAttribute(lambda obj: obj.price_usd * 75)
+    delivery_date = factory.fuzzy.FuzzyDateTime(
+        start_dt=timezone.now(), end_dt=timezone.now() + timedelta(days=720)
+    )
